@@ -12,6 +12,8 @@ let raiseMode = false;
 let themes = [];
 let myCardTheme = localStorage.getItem('pokerCardTheme') || null;
 if (myCardTheme === '') myCardTheme = null;
+// Локальный тумблер «обычные карты без картинок» (только для этого игрока).
+let plainCards = localStorage.getItem('pokerPlainCards') === '1';
 
 const $ = (id) => document.getElementById(id);
 
@@ -165,6 +167,7 @@ function themeLabel(t) {
 function buildThemePicker() {
   const grid = $('themeGrid');
   if (!grid) return;
+  if ($('plainToggle')) $('plainToggle').checked = plainCards;
   grid.innerHTML = '';
   const opts = [{ key: null, label: 'Вперемешку' }, ...themes.map((t) => ({ key: t, label: themeLabel(t) }))];
   opts.forEach((o) => {
@@ -195,6 +198,12 @@ function chooseTheme(theme) {
 }
 
 if ($('artBtn')) $('artBtn').onclick = () => { buildThemePicker(); $('themeOverlay').classList.remove('hidden'); };
+if ($('plainToggle')) $('plainToggle').onchange = (e) => {
+  plainCards = e.target.checked;
+  localStorage.setItem('pokerPlainCards', plainCards ? '1' : '0');
+  SFX.ui();
+  render(); // мгновенно перерисовать все карты
+};
 if ($('themeClose')) $('themeClose').onclick = () => $('themeOverlay').classList.add('hidden');
 if ($('themeOverlay')) $('themeOverlay').addEventListener('click', (e) => {
   if (e.target === $('themeOverlay')) $('themeOverlay').classList.add('hidden');
@@ -907,14 +916,14 @@ function cardEl(card, cls = '', opts = {}) {
   if (card === null) {
     d.classList.add('back');
     const theme = opts.backTheme || defaultTheme();
-    if (theme) addImg(d, backUrl(theme));
+    if (theme && !plainCards) addImg(d, backUrl(theme));
     return d;
   }
   const suit = card.suit;
   if (suit === 'h' || suit === 'd') d.classList.add('red');
   d.innerHTML = `<span class="c-corner">${rankSym(card.rank)}<br>${SUIT_SYM[suit]}</span><span class="c-pip">${SUIT_SYM[suit]}</span>`;
   const art = opts.art || card.art;
-  if (art) addImg(d, frontUrl(art, card));
+  if (art && !plainCards) addImg(d, frontUrl(art, card));
   return d;
 }
 
@@ -957,7 +966,7 @@ function renderSeats() {
     const theta = Math.PI / 2 + (d * 2 * Math.PI) / n;
     // Кресла разведены по овалу; соперники компактные, поэтому не наслаиваются.
     const x = 50 + 47 * Math.cos(theta);
-    const y = 50 + 36 * Math.sin(theta);
+    const y = 50 + 33 * Math.sin(theta);
 
     const seat = document.createElement('div');
     seat.className = 'seat';

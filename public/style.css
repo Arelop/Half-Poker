@@ -154,7 +154,7 @@ button { font-family: inherit; cursor: pointer; }
   pointer-events: none;
 }
 .center { text-align: center; position: relative; z-index: 1; }
-.community { display: flex; gap: 10px; justify-content: center; min-height: 158px; align-items: center; }
+.community { display: flex; gap: 10px; justify-content: center; min-height: 188px; align-items: center; }
 .community:empty { min-height: 0; } /* до флопа ряд общих карт схлопывается */
 .pot {
   margin-bottom: 14px; font-weight: 700; color: var(--gold);
@@ -165,7 +165,7 @@ button { font-family: inherit; cursor: pointer; }
 
 /* Карты. Базовый размер = общие карты в центре. */
 .card {
-  width: 112px; height: 157px; border-radius: 14px;
+  width: 132px; height: 185px; border-radius: 16px;
   background: linear-gradient(160deg, #ffffff, #eef0ea);
   color: #14110c; position: relative; overflow: hidden;
   box-shadow: 0 7px 16px rgba(0,0,0,.45), inset 0 0 0 1px rgba(0,0,0,.08);
@@ -174,13 +174,13 @@ button { font-family: inherit; cursor: pointer; }
 }
 @keyframes deal { from { transform: translateY(-18px) rotate(-6deg) scale(.8); opacity: 0; } to { transform: none; opacity: 1; } }
 .card .c-corner {
-  position: absolute; top: 6px; left: 10px;
-  font-size: 30px; font-weight: 800; line-height: .82; text-align: center;
+  position: absolute; top: 7px; left: 11px;
+  font-size: 35px; font-weight: 800; line-height: .82; text-align: center;
   letter-spacing: -.5px;
 }
 .card .c-pip {
   position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-  font-size: 76px; opacity: .9;
+  font-size: 88px; opacity: .9;
 }
 .card.red { color: var(--red); }
 /* Картинка-арт поверх запасного рисунка масти */
@@ -199,9 +199,9 @@ button { font-family: inherit; cursor: pointer; }
 .card.small .c-corner { font-size: 15px; top: 3px; left: 5px; }
 .card.small .c-pip { font-size: 30px; }
 /* Твои карты на руках — крупные (портреты друзей видны хорошо). */
-.card.mine { width: 106px; height: 148px; border-radius: 13px; }
-.card.mine .c-corner { font-size: 27px; top: 6px; left: 9px; }
-.card.mine .c-pip { font-size: 64px; }
+.card.mine { width: 128px; height: 179px; border-radius: 15px; }
+.card.mine .c-corner { font-size: 32px; top: 7px; left: 10px; }
+.card.mine .c-pip { font-size: 78px; }
 
 /* Места */
 .seats { position: absolute; inset: 0; pointer-events: none; }
@@ -209,9 +209,9 @@ button { font-family: inherit; cursor: pointer; }
   position: absolute; transform: translate(-50%, -50%);
   width: 168px; text-align: center;
 }
-.seat.you { width: 236px; } /* твоё место шире под крупные карты */
+.seat.you { width: 284px; } /* твоё место шире под крупные карты */
 .seat-cards { display: flex; gap: 6px; justify-content: center; min-height: 78px; margin-bottom: 4px; }
-.seat.you .seat-cards { gap: 8px; min-height: 148px; }
+.seat.you .seat-cards { gap: 8px; min-height: 179px; }
 .seat-box {
   background: rgba(10,20,16,.9); border: 1px solid #2c3a33; border-radius: 14px;
   padding: 9px 12px; position: relative;
@@ -301,6 +301,13 @@ button { font-family: inherit; cursor: pointer; }
 .modal-error { color: var(--red); text-align: center; min-height: 18px; margin-top: 10px; font-size: 14px; }
 
 /* Выбор арта карт */
+.plain-toggle {
+  display: flex; align-items: center; gap: 10px; margin: 12px 0 4px;
+  padding: 11px 12px; border: 1px solid #3a4a43; border-radius: 10px;
+  background: #16241d; cursor: pointer; font-size: 14px; font-weight: 600; user-select: none;
+}
+.plain-toggle:hover { border-color: var(--gold); }
+.plain-toggle input { width: 18px; height: 18px; accent-color: var(--gold); cursor: pointer; }
 .theme-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 8px; }
 .theme-opt {
   display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 8px;
@@ -555,20 +562,20 @@ button { font-family: inherit; cursor: pointer; }
 .zoom-hint { position: fixed; bottom: 30px; left: 0; right: 0; text-align: center; color: var(--muted); font-size: 14px; }
 
 @media (max-width: 560px) {
-  .card { width: 54px; height: 76px; border-radius: 8px; }
-  .card .c-corner { font-size: 15px; top: 3px; left: 5px; }
-  .card .c-pip { font-size: 36px; }
+  .card { width: 60px; height: 84px; border-radius: 8px; }
+  .card .c-corner { font-size: 16px; top: 3px; left: 5px; }
+  .card .c-pip { font-size: 40px; }
   .card.small { width: 38px; height: 53px; border-radius: 6px; }
   .card.small .c-corner { font-size: 11px; }
   .card.small .c-pip { font-size: 21px; }
-  .card.mine { width: 62px; height: 87px; border-radius: 9px; }
-  .card.mine .c-corner { font-size: 17px; }
-  .card.mine .c-pip { font-size: 40px; }
-  .community { gap: 4px; min-height: 76px; }
+  .card.mine { width: 72px; height: 101px; border-radius: 10px; }
+  .card.mine .c-corner { font-size: 19px; }
+  .card.mine .c-pip { font-size: 46px; }
+  .community { gap: 4px; min-height: 84px; }
   .seat { width: 108px; }
-  .seat.you { width: 148px; }
+  .seat.you { width: 164px; }
   .seat-cards { min-height: 53px; }
-  .seat.you .seat-cards { min-height: 87px; }
+  .seat.you .seat-cards { min-height: 101px; }
   .seat-name { font-size: 13px; }
   .seat-chips { font-size: 13px; }
   .action-row .btn { font-size: 16px; padding: 16px 6px; }
