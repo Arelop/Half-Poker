@@ -205,6 +205,8 @@ button { font-family: inherit; cursor: pointer; }
 
 /* Места */
 .seats { position: absolute; inset: 0; pointer-events: none; }
+/* Твои карты рисуются поверх центрального блока — индексы всегда видны. */
+.seat.you { z-index: 3; }
 .seat {
   position: absolute; transform: translate(-50%, -50%);
   width: 168px; text-align: center;
