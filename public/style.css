@@ -153,7 +153,9 @@ button { font-family: inherit; cursor: pointer; }
   top: 50%; left: 50%; transform: translate(-50%, -60%);
   pointer-events: none;
 }
-.center { text-align: center; position: relative; z-index: 1; }
+/* Центральный блок (банк + общие карты) поднят выше центра, чтобы
+   не соприкасаться с крупными картами игрока внизу. */
+.center { text-align: center; position: relative; z-index: 1; margin-bottom: 9%; }
 .community { display: flex; gap: 10px; justify-content: center; min-height: 188px; align-items: center; }
 .community:empty { min-height: 0; } /* до флопа ряд общих карт схлопывается */
 .pot {
@@ -560,6 +562,20 @@ button { font-family: inherit; cursor: pointer; }
 .zoom-overlay .card .c-corner { font-size: clamp(34px, 9vw, 60px); top: 16px; left: 22px; }
 .zoom-overlay .card .c-pip { font-size: clamp(120px, 34vw, 210px); }
 .zoom-hint { position: fixed; bottom: 30px; left: 0; right: 0; text-align: center; color: var(--muted); font-size: 14px; }
+
+/* Невысокие окна (ноутбуки 1080p и меньше): стол сжимается по высоте,
+   поэтому карты пропорционально уменьшаем, чтобы не наезжали. */
+@media (max-height: 1020px) and (min-width: 561px) {
+  .card { width: 104px; height: 146px; }
+  .card .c-corner { font-size: 27px; }
+  .card .c-pip { font-size: 68px; }
+  .card.mine { width: 100px; height: 140px; }
+  .card.mine .c-corner { font-size: 25px; }
+  .card.mine .c-pip { font-size: 60px; }
+  .community { min-height: 146px; }
+  .seat.you { width: 232px; }
+  .seat.you .seat-cards { min-height: 140px; }
+}
 
 @media (max-width: 560px) {
   .card { width: 60px; height: 84px; border-radius: 8px; }
