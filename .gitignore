@@ -1,0 +1,16 @@
+node_modules/
+_server.log
+*.log
+.DS_Store
+
+# Тяжёлые ассеты, которые игра НЕ отдаёт в рантайме — не тащим их в деплой.
+# (Локально файлы остаются; в игре используются только jpg_fronts/ и jpg_backs/.)
+**/*.pdf
+**/png_fronts/
+**/png_backs/
+**/previews/
+**/*_preview.jpg
+photo_*.jpg
+
+# Локальные настройки редактора/агента — не для деплоя
+.claude/

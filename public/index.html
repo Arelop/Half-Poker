@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>♠ Покер с друзьями</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- ЛОББИ -->
+  <section id="lobby" class="lobby">
+    <div class="lobby-card">
+      <h1>♠♥ Покер ♦♣</h1>
+      <p class="tag">Техасский холдем для игры с друзьями</p>
+
+      <label class="field">
+        <span>Твоё имя</span>
+        <input id="nameInput" maxlength="16" placeholder="Например, Макс" autocomplete="off" />
+      </label>
+
+      <div class="mode-switch">
+        <button type="button" class="mode-opt selected" data-mode="classic">♠ Обычный</button>
+        <button type="button" class="mode-opt" data-mode="fun">🎉 Весёлый</button>
+      </div>
+
+      <div class="lobby-actions">
+        <button id="createBtn" class="btn btn-primary">Создать стол</button>
+        <div class="join-row">
+          <input id="codeInput" maxlength="4" placeholder="КОД" autocomplete="off" />
+          <button id="joinBtn" class="btn">Войти</button>
+        </div>
+      </div>
+
+      <details class="settings">
+        <summary>Настройки стола (для создателя)</summary>
+        <div class="settings-grid">
+          <label class="field"><span>Малый блайнд</span><input id="sbInput" type="number" value="5" min="1" /></label>
+          <label class="field"><span>Большой блайнд</span><input id="bbInput" type="number" value="10" min="2" /></label>
+          <label class="field"><span>Стартовый стек</span><input id="chipsInput" type="number" value="1000" min="20" /></label>
+          <label class="field"><span>Время на ход, сек</span><input id="turnInput" type="number" value="60" min="10" max="300" /></label>
+        </div>
+      </details>
+
+      <p id="lobbyError" class="error"></p>
+    </div>
+    <footer class="credit">Сделано для весёлых вечеров 🃏</footer>
+  </section>
+
+  <!-- СТОЛ -->
+  <section id="game" class="game hidden">
+    <header class="topbar">
+      <div class="room-info">
+        <span class="label">Код стола</span>
+        <button id="codeCopy" class="code-chip" title="Скопировать код">····</button>
+      </div>
+      <div class="hand-info">
+        <span id="streetLabel">—</span>
+        <span id="handNum"></span>
+      </div>
+      <div class="topbar-right">
+        <button id="emojiBtn" class="icon-btn" title="Реакции">😀</button>
+        <button id="chatBtn" class="icon-btn" title="Чат">💬<span id="chatDot" class="chat-dot hidden"></span></button>
+        <button id="artBtn" class="icon-btn" title="Арт карт">🎨</button>
+        <button id="soundBtn" class="icon-btn" title="Звук">🔊</button>
+        <button id="leaveBtn" class="btn btn-ghost">Выйти</button>
+      </div>
+    </header>
+
+    <button id="chaosToggle" class="chaos-toggle hidden">🎉</button>
+    <div id="chaosMenu" class="chaos-menu hidden">
+      <div class="chaos-title">🎉 ВЕСЁЛЫЙ</div>
+      <div class="pstan-info">
+        <div>🏛️ Казна: <b id="treasuryVal">0</b></div>
+        <div>🪙 Шекели: <b id="myShekels">0</b> <span class="shop-stock">(в магазине <b id="shopStock">10</b>)</span></div>
+      </div>
+      <button id="buyPokerstanBtn" class="chaos-btn chaos-win"><span class="ci">🏆</span><span id="buyPokerstanLabel">Купить Покерстан</span></button>
+      <button id="sideBetBtn" class="chaos-btn"><span class="ci">🎲</span><span>Ставка на победителя</span></button>
+      <button id="donateBtn" class="chaos-btn"><span class="ci">🇮🇱</span><span id="donateLabel">В Израиль −10%</span></button>
+      <button id="denounceBtn" class="chaos-btn"><span class="ci">🕵️</span><span id="denounceLabel">Донос в налоговую</span></button>
+      <button id="investBtn" class="chaos-btn"><span class="ci">📈</span><span id="investLabel">Инвестировать в стартап</span></button>
+      <button id="lobbyBtn" class="chaos-btn"><span class="ci">🏛️</span><span id="lobbyLabel">Лоббировать</span></button>
+      <button id="casinoBtn" class="chaos-btn"><span class="ci">🎰</span><span id="casinoLabel">Открыть казино −2500</span></button>
+      <button id="benefitBtn" class="chaos-btn"><span class="ci">🆘</span><span id="benefitLabel">Пособие для лохов</span></button>
+      <button id="shekelShopBtn" class="chaos-btn"><span class="ci">🪙</span><span>Магазин шекелей</span></button>
+      <button id="gypsyBtn" class="chaos-btn"><span class="ci">🔮</span><span>Цыганка (снять метку)</span></button>
+      <button id="voteBtn" class="chaos-btn"><span class="ci">🗳️</span><span id="voteLabel">Голосование</span></button>
+      <button id="dictatorBtn" class="chaos-btn"><span class="ci">👑</span><span>Меню диктатора</span></button>
+      <button id="bribeBtn" class="chaos-btn"><span class="ci">🔪</span><span>Подкупить МВД (−5🪙)</span></button>
+      <div id="activeLaws" class="active-laws"></div>
+      <div id="sideBetList" class="side-bet-list"></div>
+    </div>
+
+    <div class="table-wrap">
+      <div class="poker-table">
+        <div class="table-felt">
+          <div class="center">
+            <div id="potDisplay" class="pot"></div>
+            <div id="community" class="community"></div>
+            <div id="resultBanner" class="result-banner hidden"></div>
+          </div>
+        </div>
+        <div id="seats" class="seats"></div>
+      </div>
+    </div>
+
+    <div class="bottom-panel">
+      <div id="reactionsBar" class="reactions-bar hidden"></div>
+
+      <div id="controls" class="controls hidden">
+        <div id="turnBar" class="turn-bar hidden"><div id="turnBarFill"></div></div>
+        <div class="bet-row hidden" id="betRow">
+          <input id="betSlider" type="range" class="slider" />
+          <div class="bet-amount"><span id="betAmount">0</span></div>
+          <div class="presets">
+            <button class="chip-btn" data-preset="min">Мин</button>
+            <button class="chip-btn" data-preset="half">½ банка</button>
+            <button class="chip-btn" data-preset="pot">Банк</button>
+            <button class="chip-btn" data-preset="max">Олл-ин</button>
+          </div>
+        </div>
+        <div class="action-row">
+          <button id="foldBtn" class="btn act-fold">Пас</button>
+          <button id="checkBtn" class="btn act-check">Чек</button>
+          <button id="callBtn" class="btn act-call">Колл</button>
+          <button id="raiseBtn" class="btn act-raise">Ставка</button>
+          <button id="confirmRaiseBtn" class="btn act-raise hidden">Подтвердить</button>
+        </div>
+      </div>
+
+      <div id="hostControls" class="host-controls">
+        <button id="dealBtn" class="btn btn-primary">Раздать</button>
+        <div class="bot-row">
+          <button id="addBotBtn" class="btn btn-ghost">＋ Бот</button>
+          <button id="removeBotBtn" class="btn btn-ghost">－ Бот</button>
+        </div>
+        <div class="transfer-row">
+          <button id="rebuyBtn" class="btn btn-ghost">💰 Докупить</button>
+          <button id="transferBtn" class="btn btn-ghost">💸 Передать фишки</button>
+          <button id="tipBtn" class="btn btn-ghost">🪙 Типануть</button>
+        </div>
+        <p id="waitHint" class="wait-hint"></p>
+      </div>
+
+      <div class="log" id="log"></div>
+    </div>
+  </section>
+
+  <!-- Модалка передачи фишек / чаевых -->
+  <div id="transferOverlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h3 id="transferTitle">Передать фишки</h3>
+      <p class="modal-sub">Кому:</p>
+      <div class="modal-players" id="transferPlayers"></div>
+      <p class="modal-sub">Сколько:</p>
+      <div class="modal-presets" id="transferPresets"></div>
+      <input id="transferAmount" type="number" min="1" placeholder="Сумма" />
+      <div class="modal-actions">
+        <button id="transferCancel" class="btn btn-ghost">Отмена</button>
+        <button id="transferSend" class="btn btn-primary">Отправить</button>
+      </div>
+      <p id="transferError" class="modal-error"></p>
+    </div>
+  </div>
+
+  <!-- Модалка выбора арта карт -->
+  <div id="themeOverlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h3>Арт твоих карт 🎨</h3>
+      <p class="modal-sub">Твои карты и рубашка станут в этом стиле. «Вперемешку» — случайные арты.</p>
+      <div class="theme-grid" id="themeGrid"></div>
+      <div class="modal-actions">
+        <button id="themeClose" class="btn btn-primary">Готово</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модалка ставки на победителя -->
+  <div id="sideBetOverlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h3>🎲 Ставка на победителя</h3>
+      <p class="modal-sub">На кого ставишь (кто возьмёт банк):</p>
+      <div class="modal-players" id="sideBetPlayers"></div>
+      <p class="modal-sub">Сумма ставки:</p>
+      <div class="modal-presets" id="sideBetPresets"></div>
+      <input id="sideBetAmount" type="number" min="1" placeholder="Сумма" />
+      <div class="modal-actions">
+        <button id="sideBetCancel" class="btn btn-ghost">Отмена</button>
+        <button id="sideBetSend" class="btn btn-primary">Поставить</button>
+      </div>
+      <p id="sideBetError" class="modal-error"></p>
+    </div>
+  </div>
+
+  <!-- Модалка доната «в Израиль» -->
+  <div id="donateOverlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h3>🇮🇱 Отправить в Израиль</h3>
+      <p class="modal-sub" id="donateSub">Ты потеряешь 10% банка. Точно?</p>
+      <div class="modal-actions">
+        <button id="donateCancel" class="btn btn-ghost">Отмена</button>
+        <button id="donateConfirm" class="btn btn-primary">Отправить 🕎</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Казино -->
+  <div id="casinoOverlay" class="modal-overlay hidden">
+    <div class="modal casino-modal">
+      <h3>🎰 Казино</h3>
+      <div class="casino-tabs">
+        <button type="button" class="casino-tab selected" data-game="roulette">🔴 Рулетка</button>
+        <button type="button" class="casino-tab" data-game="wheel">🎡 Колесо удачи</button>
+      </div>
+      <div id="rouletteOpts" class="casino-opts">
+        <div class="modal-presets">
+          <button type="button" class="chip-btn bet-type selected" data-bt="red">Красное ×2</button>
+          <button type="button" class="chip-btn bet-type" data-bt="black">Чёрное ×2</button>
+          <button type="button" class="chip-btn bet-type" data-bt="number">Число ×36</button>
+        </div>
+        <input id="rouletteNumber" class="hidden" type="number" min="0" max="36" placeholder="Число 0–36" />
+      </div>
+      <p class="modal-sub">Ставка:</p>
+      <div class="modal-presets" id="casinoPresets"></div>
+      <input id="casinoBet" type="number" min="1" placeholder="Сумма" />
+      <div id="casinoResult" class="casino-result"></div>
+      <div class="modal-actions">
+        <button id="casinoClose" class="btn btn-ghost">Выйти</button>
+        <button id="casinoSpin" class="btn btn-primary">Крутить 🎲</button>
+      </div>
+      <p id="casinoError" class="modal-error"></p>
+    </div>
+  </div>
+
+  <!-- Голосование за закон -->
+  <div id="voteOverlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h3>🗳️ Голосование за закон</h3>
+      <p class="modal-sub" id="voteStatus">Голосование тайное — никто не видит твой выбор.</p>
+      <div class="vote-laws" id="voteLaws"></div>
+      <div class="modal-actions">
+        <button id="voteClose" class="btn btn-primary">Закрыть</button>
+      </div>
+      <p id="voteError" class="modal-error"></p>
+    </div>
+  </div>
+
+  <!-- Меню диктатора -->
+  <div id="dictatorOverlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h3>👑 Меню диктатора</h3>
+      <p class="modal-sub">Казна Покерстана: <b id="dictTreasury">0</b></p>
+      <div class="shekel-buy">
+        <input id="dictAmount" type="number" min="1" placeholder="Сумма" />
+        <button id="dictTake" class="btn btn-primary">Взять</button>
+        <button id="dictDeposit" class="btn btn-ghost">Внести</button>
+      </div>
+      <hr class="modal-hr" />
+      <p class="modal-sub">Принять закон одним кликом:</p>
+      <div class="vote-laws" id="dictLaws"></div>
+      <hr class="modal-hr" />
+      <p class="modal-sub">Снять метку лоха:</p>
+      <div class="modal-players" id="dictMarked"></div>
+      <div class="modal-actions">
+        <button id="dictClose" class="btn btn-primary">Закрыть</button>
+      </div>
+      <p id="dictError" class="modal-error"></p>
+    </div>
+  </div>
+
+  <!-- Магазин золотых шекелей -->
+  <div id="shekelOverlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h3>🪙 Магазин шекелей</h3>
+      <p class="modal-sub">1 шекель = 200$. В магазине: <b id="shekelStock2">10</b>. У тебя: <b id="shekelMine2">0</b></p>
+      <div class="shekel-buy">
+        <input id="shekelBuyCount" type="number" min="1" value="1" />
+        <button id="shekelBuyBtn" class="btn btn-primary">🪙 Купить</button>
+      </div>
+      <hr class="modal-hr" />
+      <p class="modal-sub">Передать шекели игроку:</p>
+      <div class="modal-players" id="shekelPlayers"></div>
+      <input id="shekelSendCount" type="number" min="1" value="1" placeholder="Сколько шекелей" />
+      <div class="modal-actions">
+        <button id="shekelClose" class="btn btn-ghost">Закрыть</button>
+        <button id="shekelSendBtn" class="btn btn-primary">Передать</button>
+      </div>
+      <p id="shekelError" class="modal-error"></p>
+    </div>
+  </div>
+
+  <!-- Центральный тост-объявление -->
+  <div id="announceToast" class="announce-toast hidden"></div>
+
+  <!-- Баннер победы (кто купил Покерстан) -->
+  <div id="victoryBanner" class="victory-banner hidden"></div>
+
+  <!-- Панель чата -->
+  <div id="chatPanel" class="chat-panel hidden">
+    <div class="chat-head"><span>💬 Чат</span><button id="chatCloseBtn" class="icon-btn">✕</button></div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <form id="chatForm" class="chat-input" autocomplete="off">
+      <input id="chatInput" maxlength="200" placeholder="Сообщение…" autocomplete="off" />
+      <button class="btn btn-primary" type="submit">▶</button>
+    </form>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="sound.js"></script>
+  <script src="client.js"></script>
+</body>
+</html>

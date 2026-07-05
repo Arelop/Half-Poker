@@ -1,0 +1,19 @@
+{
+  "name": "poker-friends",
+  "version": "1.0.0",
+  "description": "Онлайн Техасский холдем для игры с друзьями",
+  "type": "module",
+  "main": "server.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  }
+}
