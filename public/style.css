@@ -156,7 +156,7 @@ button { font-family: inherit; cursor: pointer; }
 /* Центральный блок (банк + общие карты) поднят выше центра, чтобы
    не соприкасаться с крупными картами игрока внизу. */
 .center { text-align: center; position: relative; z-index: 1; margin-bottom: 9%; }
-.community { display: flex; gap: 10px; justify-content: center; min-height: 188px; align-items: center; }
+.community { display: flex; gap: 10px; justify-content: center; min-height: clamp(92px, min(14vh, 11vw), 185px); align-items: center; }
 .community:empty { min-height: 0; } /* до флопа ряд общих карт схлопывается */
 .pot {
   margin-bottom: 14px; font-weight: 700; color: var(--gold);
@@ -165,9 +165,11 @@ button { font-family: inherit; cursor: pointer; }
 }
 .pot:empty { display: none; }
 
-/* Карты. Базовый размер = общие карты в центре. */
+/* Карты. Размер задаётся переменной --h и масштабируется ВМЕСТЕ со столом
+   (от высоты/ширины окна), поэтому наложения невозможны при любом окне/зуме. */
 .card {
-  width: 132px; height: 185px; border-radius: 16px;
+  --h: clamp(92px, min(14vh, 11vw), 185px);
+  width: calc(var(--h) * .713); height: var(--h); border-radius: calc(var(--h) * .085);
   background: linear-gradient(160deg, #ffffff, #eef0ea);
   color: #14110c; position: relative; overflow: hidden;
   box-shadow: 0 7px 16px rgba(0,0,0,.45), inset 0 0 0 1px rgba(0,0,0,.08);
@@ -176,13 +178,13 @@ button { font-family: inherit; cursor: pointer; }
 }
 @keyframes deal { from { transform: translateY(-18px) rotate(-6deg) scale(.8); opacity: 0; } to { transform: none; opacity: 1; } }
 .card .c-corner {
-  position: absolute; top: 7px; left: 11px;
-  font-size: 35px; font-weight: 800; line-height: .82; text-align: center;
+  position: absolute; top: calc(var(--h) * .038); left: calc(var(--h) * .058);
+  font-size: calc(var(--h) * .19); font-weight: 800; line-height: .82; text-align: center;
   letter-spacing: -.5px;
 }
 .card .c-pip {
   position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-  font-size: 88px; opacity: .9;
+  font-size: calc(var(--h) * .475); opacity: .9;
 }
 .card.red { color: var(--red); }
 /* Картинка-арт поверх запасного рисунка масти */
@@ -197,13 +199,9 @@ button { font-family: inherit; cursor: pointer; }
   cursor: default;
 }
 /* Карты соперников — компактные рубашки (им большой размер не нужен). */
-.card.small { width: 56px; height: 78px; border-radius: 8px; }
-.card.small .c-corner { font-size: 15px; top: 3px; left: 5px; }
-.card.small .c-pip { font-size: 30px; }
+.card.small { --h: clamp(48px, min(6vh, 4.6vw), 78px); }
 /* Твои карты на руках — крупные (портреты друзей видны хорошо). */
-.card.mine { width: 128px; height: 179px; border-radius: 15px; }
-.card.mine .c-corner { font-size: 32px; top: 7px; left: 10px; }
-.card.mine .c-pip { font-size: 78px; }
+.card.mine { --h: clamp(88px, min(13.5vh, 10.6vw), 179px); }
 
 /* Места */
 .seats { position: absolute; inset: 0; pointer-events: none; }
@@ -212,8 +210,8 @@ button { font-family: inherit; cursor: pointer; }
   width: 168px; text-align: center;
 }
 .seat.you { width: 284px; } /* твоё место шире под крупные карты */
-.seat-cards { display: flex; gap: 6px; justify-content: center; min-height: 78px; margin-bottom: 4px; }
-.seat.you .seat-cards { gap: 8px; min-height: 179px; }
+.seat-cards { display: flex; gap: 6px; justify-content: center; min-height: clamp(48px, min(6vh, 4.6vw), 78px); margin-bottom: 4px; }
+.seat.you .seat-cards { gap: 8px; min-height: clamp(88px, min(13.5vh, 10.6vw), 179px); }
 .seat-box {
   background: rgba(10,20,16,.9); border: 1px solid #2c3a33; border-radius: 14px;
   padding: 9px 12px; position: relative;
@@ -563,30 +561,10 @@ button { font-family: inherit; cursor: pointer; }
 .zoom-overlay .card .c-pip { font-size: clamp(120px, 34vw, 210px); }
 .zoom-hint { position: fixed; bottom: 30px; left: 0; right: 0; text-align: center; color: var(--muted); font-size: 14px; }
 
-/* Невысокие окна (ноутбуки 1080p и меньше): стол сжимается по высоте,
-   поэтому карты пропорционально уменьшаем, чтобы не наезжали. */
-@media (max-height: 1020px) and (min-width: 561px) {
-  .card { width: 104px; height: 146px; }
-  .card .c-corner { font-size: 27px; }
-  .card .c-pip { font-size: 68px; }
-  .card.mine { width: 100px; height: 140px; }
-  .card.mine .c-corner { font-size: 25px; }
-  .card.mine .c-pip { font-size: 60px; }
-  .community { min-height: 146px; }
-  .seat.you { width: 232px; }
-  .seat.you .seat-cards { min-height: 140px; }
-}
-
 @media (max-width: 560px) {
-  .card { width: 60px; height: 84px; border-radius: 8px; }
-  .card .c-corner { font-size: 16px; top: 3px; left: 5px; }
-  .card .c-pip { font-size: 40px; }
-  .card.small { width: 38px; height: 53px; border-radius: 6px; }
-  .card.small .c-corner { font-size: 11px; }
-  .card.small .c-pip { font-size: 21px; }
-  .card.mine { width: 72px; height: 101px; border-radius: 10px; }
-  .card.mine .c-corner { font-size: 19px; }
-  .card.mine .c-pip { font-size: 46px; }
+  .card { --h: 84px; }
+  .card.small { --h: 53px; }
+  .card.mine { --h: 101px; }
   .community { gap: 4px; min-height: 84px; }
   .seat { width: 108px; }
   .seat.you { width: 164px; }
